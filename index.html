@@ -18,12 +18,11 @@
   </header>
 
   <main>
-    <section class="invite" aria-label="The invitation">
-      <img class="invite-img" src="invite.webp" width="800" height="1046"
-           alt="Invitation. Join us for our annual Backyard BBQ. Saturday, October 17th at 5:00 pm. The Gray Home. Please bring a side or dessert to share. Adults only please.">
+    <section class="invite" id="invite" aria-label="The invitation" hidden>
+      <canvas class="invite-img" id="inviteCanvas" width="1352" height="1768" role="img" aria-label="Invitation"></canvas>
       <div class="facts">
-        <div class="facts-when"><strong>Saturday, October 17</strong> &middot; 5:00 pm</div>
-        <div class="facts-where">The Gray Home</div>
+        <div class="facts-when" id="factsWhen"></div>
+        <div class="facts-where" id="factsWhere"></div>
         <div class="facts-cal">
           <a class="btn small" href="#rsvp">RSVP</a>
           <button class="btn ghost small" id="icsBtn" type="button">Add to calendar</button>

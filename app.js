@@ -1,4 +1,5 @@
 // RFP 2026 attendee site. Plain JavaScript, no build step.
+import { drawInvite, loadFonts } from './invite-draw.js';
 const C = window.RFP_CONFIG;
 
 const DISHES = [
@@ -30,8 +31,9 @@ const root = document.getElementById('rsvp');
 
 // ---------- calendar ----------
 const stamp = (iso) => iso.replace(/[-:]/g, '') + (iso.length === 16 ? '00' : '');
+let EVENT = C.event; // replaced by the published invite's event details once they load
 function icsText() {
-  const e = C.event;
+  const e = EVENT;
   const esc = (s) => String(s).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//RFP 2026//EN', 'BEGIN:VEVENT', 'UID:rfp-2026@preston-village',
     'DTSTAMP:' + new Date().toISOString().replace(/[-:]|\.\d{3}/g, ''), 'DTSTART:' + stamp(e.start), 'DTEND:' + stamp(e.end),
@@ -42,9 +44,23 @@ document.getElementById('icsBtn').addEventListener('click', () => {
   const a = el('a', { href: url, download: 'rfp-2026.ics' });
   document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
 });
-document.getElementById('gcalLink').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-  + '&text=' + encodeURIComponent(C.event.title) + '&dates=' + stamp(C.event.start) + '/' + stamp(C.event.end)
-  + '&location=' + encodeURIComponent(C.event.place) + '&details=' + encodeURIComponent(C.event.details);
+function applyInvite(doc) {
+  const section = document.getElementById('invite');
+  if (!doc || !doc.invite) { section.hidden = true; return; }
+  EVENT = { ...C.event, ...doc.event };
+  const inv = doc.invite;
+  const canvas = document.getElementById('inviteCanvas');
+  const plain = [inv.preLine, inv.script + ' ' + inv.title, inv.dateLine + ' ' + inv.timeLine, inv.location, inv.note]
+    .join('. ').replace(/\s*\n\s*/g, ' ');
+  canvas.setAttribute('aria-label', 'Invitation. ' + plain);
+  document.getElementById('factsWhen').textContent = (doc.facts && doc.facts.when) || '';
+  document.getElementById('factsWhere').textContent = (doc.facts && doc.facts.where) || EVENT.place || '';
+  document.getElementById('gcalLink').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(EVENT.title) + '&dates=' + stamp(EVENT.start) + '/' + stamp(EVENT.end)
+    + '&location=' + encodeURIComponent(EVENT.place) + '&details=' + encodeURIComponent(EVENT.details);
+  section.hidden = false;
+  loadFonts().then(() => drawInvite(canvas, inv));
+}
 
 // ---------- talking to the RSVP sheet ----------
 const params = new URLSearchParams(location.search);
@@ -72,6 +88,7 @@ const S = { phase: 'loading', data: null, mode: 'choose', draft: null, sending: 
 function setData(d) {
   S.data = d; S.phase = 'ready'; S.error = '';
   S.mode = d.rsvp ? 'done' : 'choose';
+  applyInvite(d.invite);
 }
 
 async function load() {
