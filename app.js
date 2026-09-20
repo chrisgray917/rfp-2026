@@ -110,8 +110,10 @@ async function submit() {
     if (!r.ok) throw new Error(r.error);
     setData(r);
     window.scrollTo({ top: root.offsetTop - 12, behavior: 'smooth' });
-  } catch {
-    S.error = 'Hmm, that did not go through. Please check your connection and try again. Your answers are still here.';
+  } catch (e) {
+    S.error = e && e.message === 'preview_only'
+      ? 'This is just a preview, so nothing was saved. Each guest gets their own link to RSVP.'
+      : 'Hmm, that did not go through. Please check your connection and try again. Your answers are still here.';
   }
   S.sending = false; render();
 }
@@ -134,7 +136,10 @@ function startNo() {
 }
 
 function render() {
-  root.replaceChildren(view());
+  const v = view();
+  if (S.phase === 'ready' && S.data && S.data.preview) {
+    root.replaceChildren(el('p', { class: 'fine', role: 'note' }, 'Preview: this is how guests see the invite. RSVPs are turned off on this link.'), v);
+  } else root.replaceChildren(v);
 }
 
 function view() {
