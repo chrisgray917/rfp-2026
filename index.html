@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#fbf6ee">
+  <title>RFP 2026 | Preston Village Pig Roast</title>
+  <meta name="description" content="You're invited to the annual Preston Village Pig Roast. RSVP here.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="plaid-strip" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-script">RFP</div>
+    <p class="hero-sub">Roast a Frikkin' Pig &middot; 2026</p>
+  </header>
+
+  <main>
+    <section class="invite" aria-label="The invitation">
+      <img class="invite-img" src="invite.webp" width="800" height="1046"
+           alt="Invitation. Join us for our annual Backyard BBQ. Saturday, October 17th at 5:00 pm. The Gray Home. Please bring a side or dessert to share. Adults only please.">
+      <div class="facts">
+        <div class="facts-when"><strong>Saturday, October 17</strong> &middot; 5:00 pm</div>
+        <div class="facts-where">The Gray Home</div>
+        <div class="facts-cal">
+          <a class="btn small" href="#rsvp">RSVP</a>
+          <button class="btn ghost small" id="icsBtn" type="button">Add to calendar</button>
+          <a class="btn ghost small" id="gcalLink" target="_blank" rel="noopener">Google Calendar</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="rsvp" class="rsvp" aria-live="polite">
+      <div class="card"><p class="muted">Loading your RSVP...</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Questions? Just text Chris or Lauren.</p>
+  </footer>
+
+  <noscript><p class="noscript">This page needs JavaScript to take your RSVP. Please text Chris or Lauren instead.</p></noscript>
+  <script src="config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
